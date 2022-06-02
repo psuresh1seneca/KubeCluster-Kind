@@ -42,7 +42,7 @@ resource "aws_instance" "ec2_inst" {
   ami                         = data.aws_ami.latest_amazon_linux.id
   instance_type               = lookup(var.instance_type, var.env)
   key_name                    = aws_key_pair.my_key.key_name
-  vpc_security_group_ids             = [aws_security_group.my_sg.id]
+  vpc_security_group_ids             = [aws_security_group.ec2_sg.id]
   associate_public_ip_address = false
 
   lifecycle {
