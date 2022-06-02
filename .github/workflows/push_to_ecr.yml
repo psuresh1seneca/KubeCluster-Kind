@@ -30,7 +30,8 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: first-ecr-repo
-        IMAGE_TAG: v0.1
+        IMAGE_TAG1: catsv0.1
+        IMAGE_TAG2: dogsv0.1
       run: |
         cd cats-dogs/cats
         ls -ltra
@@ -42,3 +43,14 @@ jobs:
         echo "Pause for 10 seconds to let container start"
         sleep 10
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        cd cats-dogs/dogs
+        ls -ltra
+        # Docker build
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        # Unit test
+        docker run -d -p 8080:80 --name nodeapp $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker ps
+        echo "Pause for 10 seconds to let container start"
+        sleep 10
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2
+
