@@ -32,7 +32,7 @@ jobs:
         ECR_REPOSITORY: first-ecr-repo
         IMAGE_TAG: v0.1
       run: |
-        cd ../../cats-dogs/cats
+        cd /cats-dogs/cats
         ls -ltra
         # Docker build
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
