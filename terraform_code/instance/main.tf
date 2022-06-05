@@ -7,7 +7,7 @@ provider "aws" {
 locals {
   default_tags = merge(module.globalvars.default_tags, { "env" = var.env })
   prefix       = module.globalvars.prefix
-  name_prefix  = "${local.prefix}-${var.env}"
+  name_prefix  = "${local.prefix}"
 }
 
 # Retrieve global variables from the Terraform module
