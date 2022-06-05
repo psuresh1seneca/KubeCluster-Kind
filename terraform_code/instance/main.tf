@@ -36,14 +36,24 @@ data "aws_vpc" "default" {
   default = true
 }
 
+# ECR
+resource "aws_ecr_repository" "repo" {
+  name                 = "assignment1-repo"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
 
-# Reference subnet provisioned by 01-Networking 
+# EC2 Instance
 resource "aws_instance" "ec2_inst" {
   ami                         = data.aws_ami.latest_amazon_linux.id
   instance_type               = lookup(var.instance_type, var.env)
   key_name                    = aws_key_pair.my_key.key_name
   vpc_security_group_ids             = [aws_security_group.ec2_sg.id]
   associate_public_ip_address = false
+  iam_instance_profile               = "LabInstanceProfile"
+  user_data                          = file("${path.module}/install_docker.sh")
 
   lifecycle {
     create_before_destroy = true
@@ -65,14 +75,23 @@ resource "aws_key_pair" "my_key" {
 
 # Security Group
 resource "aws_security_group" "ec2_sg" {
-  name        = "allow_ssh"
-  description = "Allow SSH inbound traffic"
+  name        = "allow_traffic"
+  description = "Allow SSH and HTTP Traffic"
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
     description      = "SSH from everywhere"
     from_port        = 22
     to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+  
+   ingress {
+    description      = "HTTP from everywhere for ports 8080 & 8081"
+    from_port        = 8080
+    to_port          = 8081
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
