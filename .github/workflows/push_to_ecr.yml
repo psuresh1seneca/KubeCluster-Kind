@@ -29,33 +29,33 @@ jobs:
     - name: Build, test, tag, and push [CATS] image to Amazon ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: cats-ecr
+        ECR_REPOSITORY1: cats-ecr
         IMAGE_TAG1: catsv1
       run: |
         cd cats-dogs/cats
         ls -ltra
         # Docker build
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG1 .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY1:$IMAGE_TAG1 .
         # Unit test
-        docker run -d -p 80:8080 --name cats $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG1
+        docker run -d -p 80:8080 --name cats $ECR_REGISTRY/$ECR_REPOSITORY1:$IMAGE_TAG1
         docker ps
         echo "Pause for 10 seconds to let container start"
         sleep 10
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG1
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY1:$IMAGE_TAG1
         
     - name: Build, test, tag, and push [DOGS] image to Amazon ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: dogs-ecr
+        ECR_REPOSITORY2: dogs-ecr
         IMAGE_TAG1: dogsv1
       run: |
         cd cats-dogs/dogs
         ls -ltra
         # Docker build
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2 .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY2:$IMAGE_TAG2 .
         # Unit test
-        docker run -d -p 80:8081 --name dogs $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2
+        docker run -d -p 80:8081 --name dogs $ECR_REGISTRY/$ECR_REPOSITORY2:$IMAGE_TAG2
         docker ps
         echo "Pause for 10 seconds to let container start"
         sleep 10
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY2:$IMAGE_TAG2
